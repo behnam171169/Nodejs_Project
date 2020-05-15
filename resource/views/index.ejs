@@ -1,17 +1,45 @@
+<main role="main">
+  <section class="jumbotron text-center">
+      <div class="container">
+          <h1 class="jumbotron-heading">NODEJS TUTORIAL</h1>
+          <p class="lead text-muted">دنیای برنامه نویسی JS</p>
+          <p>
+              <a href="#" class="btn btn-success my-2">دوره های آموزشی</a>
+              <a href="#" class="btn btn-danger my-2">مقالات</a>
+          </p>
+      </div>
+  </section>
 
-<!-- <% contentFor=('body') %> -->
-  <style>
-    /* .starter-template{
-      background: #000;
-    } */
-  </style>
+  <div class="box_section-item mt-2">
+      <div class="container">
+          <h5>دوره ها</h5>
+          <div class="row">
+              <% courses.forEach(course => { %>
+              <div class="col-md-4">
+                  <div class="card mb-4">
+                      <% Object.entries(course.images).forEach(([size, image]) => { %>
+                      <% if(size == "360") { %>
+                      <a href="<%= course.path() %>"><img class="card-img-top" src="<%= image %>"
+                              alt="<%= course.title %>" style="width: 100%; height: 200px; object-fit : cover"></a>
+                      <% } %>
+                      <% }) %>
+                      <div class="card-body">
+                          <h5 class="card-text"><%- course.title %></h5>
+                          <p class="card-text"><%- course.body.substr(0,100) %></p>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <a href="<%= course.path() %>" class="btn btn-sm btn-outline-secondary">مشاهده</a>
+                              </div>
+                              <small class="text-muted"><%- course.viewCount %></small>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <% }) %>
 
-
-<div class="container">
-    <h1 class="mt-5">Sticky footer with fixed navbar</h1>
-    <p class="lead">Pin a footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>main &gt; .container</code>.</p>
-    <p>Back to <a href="/docs/4.4/examples/sticky-footer/">the default sticky footer</a> minus the navbar.</p>
+          </div>
+      </div>
   </div>
-  <script>
-    console.log('master page');
-  </script>
+
+ 
+</main>

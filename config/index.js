@@ -7,5 +7,6 @@ module.exports={
     layout,
     database,
     service,
-    session
+    session,
+    debug:false
 }

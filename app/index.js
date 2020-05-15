@@ -1,4 +1,5 @@
 const express = require('express');
+const Helper=require('./routes/helper');
 const http=require('http');
 const path=require('path');
 const app = express();
@@ -11,8 +12,10 @@ const cookieParser=require('cookie-parser');
 const flash=require('connect-flash');
 const passport=require('passport');
 var methodOverride = require('method-override');
-const rememberLogin=require('app/http/middleware/rememberLogin')
-
+const rememberLogin=require('app/http/middleware/rememberLogin');
+const access=require('app/accessUser');
+const socketIo = require('socket.io');
+const chatController=require('app/http/controlers/chat/chatController');
 module.exports=class Application{
     constructor(){
         this.configServer();
@@ -22,7 +25,12 @@ module.exports=class Application{
     }
     configServer(){
         const server=http.createServer(app);
+        const io=socketIo(server);
+        chatController.connectToSocket(io);
     
+        // io.on('connection',socket=>{
+        //     console.log('socket io run')
+        // })
    
         server.listen(5000,(err)=>{
             if(err) console.log(err)
@@ -32,7 +40,7 @@ module.exports=class Application{
 
     configDatabase(){
 mongoose.Promise=global.Promise;
-mongoose.connect(config.database.url);
+mongoose.connect(config.database.url,{useFindAndModify:false});
     }
     setConfig(){
         require('./passport/passport-local');
@@ -54,17 +62,18 @@ mongoose.connect(config.database.url);
   app.use(rememberLogin.handle);
   app.use(methodOverride('_method'));
 app.use((req,res,next)=>{
-    app.locals={
-        auth:{
-            check:req.isAuthenticated(),
-            user:req.user
-        }
-    }
+    app.locals=new Helper(req,res).object()
     next();
 })
+app.use(access.middleware())
     }
     setRoutes(){
-      app.use(require('./routes'))
-       
+        app.use(require('./routes/api/index'));
+      app.use(require('./routes'));
+  
+    //   app.use(require('./routes/api'));
+    //    app.all('*',(req,res,next)=>{
+    //        res.json('چنین صفحه ای وجود ندارد')
+    //    })
     }
 }

@@ -3,9 +3,16 @@ const course=require('app/models/course');
 const Episode=require('app/models/episode');
 class courseController extends controler{
 async index(req,res,next){
-    const episodes=await Episode.find({});
-    const Courses=await course.find({});
-    res.render('admin/episode/index',{episodes,Courses});
+    try{
+  
+        const episodes=await Episode.find({}).populate('course');
+   
+        // const Courses=await course.find({});
+        res.render('admin/episode/index',{episodes});
+    }catch(err){
+next(err)
+    }
+  
 }
 async  create(req,res,next){
      const Courses=await course.find({});
@@ -38,29 +45,35 @@ async update(req,res,next){
     let result=true;
     if(result){
   
-        return this.updateProcess(req,res,next);
+       this.updateProcess(req,res,next);
     }else{
         if(req.file){
-            return this.back(req,res);
+            this.back(req,res);
         }
-        return this.back(req,res);
+    
     }
 }
 
 async storeProcess(req,res,next){
-
-const addepisode=new Episode({...req.body});
+try{
+    const addepisode=new Episode({...req.body});
  
-await addepisode.save(err => console.log(err));
+    await addepisode.save(err => console.log(err));
+    
+     this.updateCourseTime(req.body.course);
+    
+    res.redirect('/admin/episode');
+}catch(err){
+    next(err)
+}
 
-this.updateCourseTime(req.body.course);
-
-res.redirect('/admin/episode');
 }
 
 async updateProcess(req,res,next){
-   await Episode.findByIdAndUpdate(req.params.id,{$set:{...req.body}});
-
+    // await Episode.findByIdAndUpdate(req.params.id,{$set:{...req.body}});
+   const  episode=await  Episode.findByIdAndUpdate(req.params.id,{$set:{...req.body}});
+  this.updateCourseTime(episode.course);
+  this.updateCourseTime(req.body.course);
     return res.redirect('/admin/episode');
 }
 
@@ -72,19 +85,21 @@ async updateProcess(req,res,next){
     if(!episode){
        res.json('چنین ویدیویی در این دوره ثبت نشده است')
     }
+    this.updateCourseTime(episode.course)
     episode.remove();
     return res.redirect('/admin/episode')
 }
 async updateCourseTime(courseId){
    
-    const Course=await course.findById(courseId);
+    const Course=await course.findById(courseId).populate('episodes');
+
+    // const episodes=await Episode.find({course:courseId});
+    // console.log(this.getTime(episodes),'llklklkl')
+    Course.set({time:this.getTime(Course.episodes)});
+
    
-    const episodes=await Episode.find({course:courseId});
-   
-    Course.set({time:this.getTime(episodes)});
-    console.log(this.getTime(episodes),'kkkkkk')
     await Course.save();
- 
+   
 }
 }
 module.exports=new courseController();

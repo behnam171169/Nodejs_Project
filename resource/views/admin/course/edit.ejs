@@ -35,9 +35,12 @@
                     </div>
 
                     <div class="col">
-                        <label for="categories" class="control-label font-weight-bold font-weight-bold">دسته
-                            بندی</label>
-    
+                        <label for="categories" class="control-label font-weight-bold font-weight-bold">دسته بندی</label>
+                        <select name="categories" id="categories" class="form-control form-control-chosen" data-placeholder="دسته بندی مورد نظر را انتخاب نمایید" multiple>
+                            <% categories.forEach(category => { %>
+                            <option value="<%- category.id %>" <%- Course.categories.indexOf(category.id) !==-1 ? 'selected':'' %>><%- category.name %></option>
+                            <% }) %>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group row">

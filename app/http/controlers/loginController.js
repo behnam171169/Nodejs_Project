@@ -20,11 +20,8 @@ showForm(req,res,next){
 async login(req,res,next){
     passport.authenticate('local.login',(err,user)=>{
       if(!user){
-          
-           return res.redirect('/auth/login')
-        
+           return res.redirect('/auth/login') 
         }else{
-
     req.login(user,err=>{
       console.log(req.body.remember)
           if(err)
@@ -32,15 +29,10 @@ async login(req,res,next){
      if(req.body.remember){
     user.setRememberToken(res);
      }
-            
           console.log('وارد شدید')
             return res.redirect('/')
-          
-        
       }) 
-
       }
-  
     })(req,res,next)
 }
 }

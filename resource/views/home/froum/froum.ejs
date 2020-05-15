@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="table-responsive">
+        <table class="table table-striped" style="margin-top:50px">
+            <thead>
+                <tr>
+                    <th>انجمن</th>
+                    <th>نوشته ها</th>
+                    <th>پاسخ ها</th>
+                    <th>آخرین بروزرسانی</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% froums.forEach(froum => { %>
+                <tr>
+                    <td><a href="/froumQue/<%= froum._id %>"><%= froum.title %></a></td>
+                    <td><%= froum.questions.length %></td>
+                    <% let count = 0 %>
+                    <% froum.questions.forEach(question => { %>
+                        <% count += question.countAns %>
+                    <% }) %>
+                    <td><%= count %></td>
+                    <td><%= date(froum.updatedAt).fromNow() %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
